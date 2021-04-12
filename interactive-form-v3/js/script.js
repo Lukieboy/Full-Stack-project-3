@@ -1,5 +1,10 @@
-/**
+/**=============================================================================
+ * =============================================================================
+ * =============================================================================
  * VARIABLES
+ * =============================================================================
+ * =============================================================================
+ * =============================================================================
  */
 const name = document.querySelector('#name');
 const email = document.querySelector('#email');
@@ -26,10 +31,17 @@ const expMonth = document.querySelector('#exp-month');
 const expYear = document.querySelector('#exp-year');
 const register = document.querySelector('.register');
 const actHint = document.querySelector('#activities-hint');
+const selectHidden = document.querySelector('.select-hidden');
 const activityInput = document.querySelectorAll('#activities input');
+const options = document.querySelectorAll("#color option")
 var total = 0;
-/**
+/**=============================================================================
+ * =============================================================================
+ * =============================================================================
  * PRESETS
+ * =============================================================================
+ * =============================================================================
+ * =============================================================================
  */
 name.focus();
 otherJobRole.style.display = "none";
@@ -38,15 +50,20 @@ payment.value = "credit-card";
 payPal.style.display = "none";
 bitcoin.style.display = "none";
 
-/**
+/**=============================================================================
+ * =============================================================================
+ * =============================================================================
  * Event Listeners
+ * =============================================================================
+ * =============================================================================
+ * =============================================================================
  */
 
-select.addEventListener('blur', ()=>{
+select.addEventListener('change', ()=>{
     JobRole();
 })
 
-design.addEventListener('blur', ()=>{
+design.addEventListener('change', ()=>{
     validateShirts();
 });
 
@@ -59,8 +76,15 @@ page.addEventListener('click', ()=>{
     checkPayment();
 });
 
-register.addEventListener('click', (e)=>{
-    e.preventDefault();
+//=============================================================================
+//submit event listener
+//=============================================================================
+
+document.addEventListener('submit', (e)=>{
+    let hesf = validateForm();
+    if(hesf === false){
+        e.preventDefault();
+    }
     register.style.display = "block"
     validateForm();
 });
@@ -82,8 +106,20 @@ setInterval(checkPayment, 100);
 
 
 /**
+ * =============================================================================
+ * =============================================================================
+ * =============================================================================
  * FUNCTIONS
+ * =============================================================================
+ * =============================================================================
+ * =============================================================================
  */
+
+
+ /**=============================================================================
+  * CALCULATE ACTIVITY TOTAL FUNCTION
+  * =============================================================================
+  */
 
 function calculateTotal(){
     total = 0;
@@ -95,8 +131,9 @@ function calculateTotal(){
     cost.innerHTML = `Total: $  ${total}`;
 }
 
-
-
+/**
+ * CHANGE SHIRTS
+ */
 
 
 function validateShirts(){
@@ -109,14 +146,18 @@ function validateShirts(){
                 jsPuns[index].style.display ="inline";
             }
             theme.textContent = "JS Puns"
+            options[0].selected = true;
+            options[0].textContent = "Please select a color";
+
         }else{
            for (let index = 0; index < 3; index++) {
                jsPuns[index].style.display ="none";
                jsShirts[index].style.display ="inline";
            }
            theme.textContent = "JS Shirts"
+           options[0].selected = true;
+           options[0].textContent = "Please select a color";
         }
-
    }
 }
 
@@ -168,6 +209,7 @@ function validateForm(){
     let emailValue = /^[^@]+@[^\.]+\.[a-z]*$/i.test(email.value);
     if(emailValue && name.value && total != 0 && /^\d{13,16}$/.test(creditCardInput.value)  && /^\d{5}$/.test(zipInput.value) && /^\d{3}$/.test(cvvInput.value)){
             return true;
+            
         
     }else{
 
@@ -200,6 +242,7 @@ function validateForm(){
         if(expYear.value != "Select Year"){expYear.style.border = "1px solid rgba(36, 28, 21, 0.2)"}
         }
         
+
         return false;
     }
 }
