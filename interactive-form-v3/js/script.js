@@ -7,6 +7,7 @@
  * =============================================================================
  */
 const name = document.querySelector('#name');
+const form = document.querySelector('form');
 const email = document.querySelector('#email');
 const otherJobRole = document.querySelector('#other-job-role');
 const select = document.querySelector('#title');
@@ -46,6 +47,7 @@ var total = 0;
 name.focus();
 otherJobRole.style.display = "none";
 color.disabled = true;
+//SETS VALUE OF PAYMENT TO CREDIT CARD AND HIDES OTHER METHODS
 payment.value = "credit-card";
 payPal.style.display = "none";
 bitcoin.style.display = "none";
@@ -80,14 +82,20 @@ page.addEventListener('click', ()=>{
 //submit event listener
 //=============================================================================
 
-document.addEventListener('submit', (e)=>{
-    let hesf = validateForm();
-    if(hesf === false){
+
+//==============================
+//vaslidates form when submitted
+//==============================
+form.addEventListener('submit', (e)=>{
+    let formvalidate = validateForm();
+    if(formvalidate === false){
         e.preventDefault();
     }
     register.style.display = "block"
     validateForm();
 });
+
+
 
 for (let index = 0; index < activityInput.length; index++) {
     activityInput[index].addEventListener('focus', ()=>{
@@ -99,6 +107,9 @@ for (let index = 0; index < activityInput.length; index++) {
     });
 }
 
+//==================
+//Checks form of payment 
+//==================
 
 setInterval(checkPayment, 100);
 
@@ -131,10 +142,10 @@ function calculateTotal(){
     cost.innerHTML = `Total: $  ${total}`;
 }
 
-/**
- * CHANGE SHIRTS
+/**==============================
+ * CHanges shirts when different themes are selected.
+ * ==============================
  */
-
 
 function validateShirts(){
     if(design.value !== 'Select Theme'){
@@ -161,8 +172,9 @@ function validateShirts(){
    }
 }
 
-
-
+//====================================
+//Checks what form of payment the user chooses
+//====================================
 
 function checkPayment(){
     if(payment.value === "paypal"){
@@ -181,6 +193,9 @@ function checkPayment(){
     document.querySelector('form').className = "";
 }
 
+//
+//Checks whether other Job Role is selected and then shows input
+//
 function JobRole(){
     if(select.value === 'other'){
         otherJobRole.style.display = "block";
@@ -189,12 +204,15 @@ function JobRole(){
     }
 }
 
+//addInvalid: makes the elements that are not valid add hints and red border and !
 
 function addInvalid(element){
     element.parentElement.className -= " valid";
     element.parentElement.className += " not-valid";
     element.parentElement.lastElementChild.style.display = "block";
 }
+
+//addValid: adds check + removes red boders and !
 
 function addValid(element){
         element.parentElement.lastElementChild.style.display = "none";
@@ -204,15 +222,21 @@ function addValid(element){
 
 }
 
+///==========================================
+///Validates the entire form
+///==========================================
 function validateForm(){
     calculateTotal();
     let emailValue = /^[^@]+@[^\.]+\.[a-z]*$/i.test(email.value);
-    if(emailValue && name.value && total != 0 && /^\d{13,16}$/.test(creditCardInput.value)  && /^\d{5}$/.test(zipInput.value) && /^\d{3}$/.test(cvvInput.value)){
+    
+    if(emailValue && name.value && total != 0 && credit() ){
             return true;
             
         
     }else{
-
+        ///======================================================
+        //validates the diff elements and adds invalid or valid 
+        ///======================================================
         if(!emailValue){ addInvalid(email) } 
         else{addValid(email)}
 
@@ -229,20 +253,35 @@ function validateForm(){
         }
 
         if(payment.value == "credit-card"){
-        if(!/^\d{13,16}$/.test(creditCardInput.value)){addInvalid(creditCardInput)}
-        else{addValid(creditCardInput)}
-
-        if(!/^\d{5}$/.test(zipInput.value)){addInvalid(zipInput)}
-        else{addValid(zipInput)}
-
-        if(!/^\d{3}$/.test(cvvInput.value)){addInvalid(cvvInput)}
-        else{addValid(cvvInput)}
-        console.log(expMonth.value )
-        if(expMonth.value != "Select Date"){ expMonth.style.border = "1px solid rgba(36, 28, 21, 0.2)"}
-        if(expYear.value != "Select Year"){expYear.style.border = "1px solid rgba(36, 28, 21, 0.2)"}
+            if(!/^\d{13,16}$/.test(creditCardInput.value)){addInvalid(creditCardInput)}
+            else{addValid(creditCardInput)}
+    
+            if(!/^\d{5}$/.test(zipInput.value)){addInvalid(zipInput)}
+            else{addValid(zipInput)}
+    
+            if(!/^\d{3}$/.test(cvvInput.value)){addInvalid(cvvInput)}
+            else{addValid(cvvInput)}
+            console.log(expMonth.value )
+            if(expMonth.value != "Select Date"){ expMonth.style.border = "1px solid rgba(36, 28, 21, 0.2)"}
+            if(expYear.value != "Select Year"){expYear.style.border = "1px solid rgba(36, 28, 21, 0.2)"}
         }
         
 
         return false;
     }
 }
+
+
+
+
+function credit(){
+
+if(payment.value == "credit-card"){
+    if(/^\d{13,16}$/.test(creditCardInput.value)  && /^\d{5}$/.test(zipInput.value) && /^\d{3}$/.test(cvvInput.value)  ) {
+        return true;
+    }else{
+        return false;
+    }
+}else{
+    return true;
+}}
